@@ -1,0 +1,255 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Scripts.Render("~/bundles/angular")
+@Scripts.Render("~/App/js")
+
+<h2>People</h2>
+ 
+<div >
+    @Html.Hidden("personId")
+    <!-- Button trigger modal -->
+<button class="btn btn-primary" data-toggle="modal" data-target="#myModalHorizontal">
+    Add Person
+</button><br /><br/>
+    <div ng-controller="myCtrl" ng-init="getPerson()">
+       
+        <!--People list table-->
+        <table  class="table table-bordered table-hover">
+            <tr>
+                <td>
+                    <b>ID</b>
+                </td>
+                <td>
+                    <b>Name</b>
+                </td>
+                <td>
+                    <b>Address1</b>
+                </td>
+                <td>
+                    <b>Address2</b>
+                </td>
+                <td>
+                    <b>City</b>
+                </td>
+                <td>
+                    <b>Action</b>
+                </td>
+            </tr>
+            <tr ng-repeat="person in people">
+                <td>
+                    {{person.Id}}
+                </td>
+                <td>
+                    {{person.Name}}
+                </td>
+                <td>
+                    {{person.Address1}}
+                </td>
+                <td>
+                    {{person.Address2}}
+                </td>
+                <td>
+                    {{person.City}}
+                </td>
+                <td>
+                    <input type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalHorizontal2" value="Update" ng-click="getUpdatePersonData(person)" />
+                 <input type="button" class="btn btn-primary" value="Delete" ng-click="deletePerson(person)" />
+                </td>
+            </tr>
+        </table>
+
+      
+
+        <!-- Add OrderModal -->
+        <div class="modal fade" id="myModalHorizontal" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                                data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            Add Orders
+                        </h4>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+
+                        <form class="form-horizontal" role="form" name="Add1" novalidate>
+                           <!-- <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Id</label>
+                                <div class="col-sm-10" ng-class="{ 'has-error' : Add1.Id.$invalid && Add1.Id.$error }">
+                                    <input type="number" class="form-control" name="Id" placeholder="Id" ng-model="Id1" required>
+                                    <p ng-show="Add1.Id.$invalid && Add1.Id.$error.required" class="help-block">* required</p>
+                                </div>
+                            </div>-->
+
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Name</label>
+                                <div class="col-sm-10" ng-class="{ 'has-error' : Add1.Name.$invalid && Add1.Name.$error }">
+                                    <input type="text" class="form-control" name="Name" placeholder="Name" ng-model="Name1" ng-minlength="7" ng-maxlength="14" required>
+                                    <p ng-show="Add1.Name.$error.required && Add1.Name.$invalid" class="help-block">* required</p>
+                                    <p ng-show="Add1.Name.$error.minlength" class="help-block">Username is too short.</p>
+                                    <p ng-show="Add1.Name.$error.maxlength" class="help-block">Username is too long.</p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputPassword3">Address1</label>
+                                <div class="col-sm-10" ng-class="{'has-error':Add1.Adr1.$invalid && Add1.Adr1.$error}">
+                                    <input type="text" class="form-control" id="Add2" placeholder="Address1" ng-model="Addr1" name="Adr1" required>
+                                    <p ng-show="Add1.Adr1.$invalid && Add1.Adr1.$error.required" class="help-block">* required</p>
+                                </div>
+                            </div>
+
+                            
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Address2</label>
+                                <div class="col-sm-10" ng-class="{'has-error':Add1.adr2.$invalid && Add1.adr2.$error}">
+                                    <input type="text" class="form-control" id="Add2" placeholder="Address2" ng-model="Add21" name="adr2" required>
+                                    <p ng-show="Add1.adr2.$invalid && Add1.adr2.$error.required" class="help-block">* required</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">City</label>
+                                <div class="col-sm-10" ng-class="{'has-error':Add1.City.$invalid && Add1.City.$error}">
+                                    <input type="text" class="form-control" id="City" placeholder="City" ng-model="City1" name="City" required>
+                                    <p ng-show="Add1.City.$invalid && Add1.City.$error.required" class="help-block">* required</p>
+                                </div>
+                            </div>
+
+                        </form>
+
+
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">
+                            Close
+                        </button>
+                        <input type="button" id="Add_Person" class="btn btn-default" value="Submit" ng-click="addPerson(Add1.$valid)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Update OrderModal -->
+        <div class="modal fade" id="myModalHorizontal2" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                                data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            Update Orders
+                        </h4>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+
+                        <form class="form-horizontal" role="form" name="Upd1" novalidate>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Id</label>
+                                <div class="col-sm-10" ng-class="{ 'has-error' : Upd1.Id.$invalid && Upd1.Id.$error }">
+                                    <input type="number" class="form-control" name="Id" placeholder="Id" ng-model="Id" ng-readonly="true" required>
+                                    <p ng-show="Upd1.Id.$invalid && Upd1.Id.$error.required" class="help-block">* required</p>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Name</label>
+                                <div class="col-sm-10" ng-class="{ 'has-error' : Upd1.Name.$invalid && Upd1.Name.$error }">
+                                    <input type="text" class="form-control" name="Name" placeholder="Name" ng-model="Name" ng-minlength="7" ng-maxlength="14" required>
+                                    <p ng-show="Upd1.Name.$error.required && Upd1.Name.$error.required" class="help-block">* required</p>
+                                    <p ng-show="Upd1.Name.$error.minlength" class="help-block">Username is too short.</p>
+                                    <p ng-show="Upd1.Name.$error.maxlength" class="help-block">Username is too long.</p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputPassword3">Address1</label>
+                                <div class="col-sm-10" ng-class="{'has-error':Upd1.Adr1.$invalid && Upd1.Adr1.$error}">
+                                    <input type="text" class="form-control" id="Add2" placeholder="Address1" ng-model="Addr" name="Adr1" required>
+                                    <p ng-show="Upd1.Adr1.$invalid && Upd1.Adr1.$error.required" class="help-block">* required</p>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Address2</label>
+                                <div class="col-sm-10" ng-class="{'has-error':Upd1.adr2.$invalid && !Upd1.adr2.$error}">
+                                    <input type="text" class="form-control" id="Add2" placeholder="Address2" ng-model="Add2" name="adr2" required>
+                                    <p ng-show="Upd1.adr2.$invalid && Upd1.adr2.$error.required" class="help-block">* required</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">City</label>
+                                <div class="col-sm-10" ng-class="{'has-error':Upd1.City.$invalid && !Upd1.City.$error}">
+                                    <input type="text" class="form-control" id="City" placeholder="City" ng-model="City" name="City" required>
+                                    <p ng-show="Upd1.City.$invalid && Upd1.City.$error.required" class="help-block">* required</p>
+                                </div>
+                            </div>
+
+                        </form>
+
+
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">
+                            Close
+                        </button>
+                        <input type="button" id="Add_Person" class="btn btn-default" value="Submit" ng-click="personUpdate(Upd1.$valid)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--end-->
+    </div>
+    
+
+</div>  
+

@@ -1,0 +1,290 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    
+        }
+        @Scripts.Render("~/bundles/angular")
+        @Scripts.Render("~/App/js")
+<h2>Order Details</h2>
+<div>
+    @Html.Hidden("personId")
+    <!-- Button trigger modal -->
+    <button class="btn btn-primary" data-toggle="modal" data-target="#myModalHorizontal">
+       Add Order
+    </button><br /><br />
+
+
+    <div ng-controller="myCtrl" ng-init="getOrder()">
+
+        <!--Order list Table-->
+
+        <table class="table table-bordered table-hover">
+            <tr>
+                <td>
+                    <b>Order Id</b>
+                </td>
+                <td>
+                    <b>Date</b>
+                </td>
+                <td>
+                    <b>Customer Name</b>
+                </td>
+                <td>
+                    <b>Product</b>
+                </td>
+                <td>
+                    <b>Price</b>
+                </td>
+                <td>
+                    <b>Action</b>
+                </td>
+            </tr>
+            <tr ng-repeat="orders in order">
+                <td>
+                    {{orders.Id}}
+
+                </td>
+                <td>
+                    {{orders.OrderDate|date:'yyyy-MM-dd'}}
+                </td>
+                <td>
+                    {{orders.Name}}
+
+                </td>
+                <td>
+                    {{orders.ProductName}}
+                </td>
+                <td>
+                    {{orders.Price|currency}}
+                </td>
+                <td>
+
+                    <input type="hidden" id="productDetailsId" value="{{orders.productDetailsId}}" />
+                    <input class="btn btn-primary" data-toggle="modal" data-target="#myModalHorizontal2" value="Update" ng-click="updateOrder(orders)" />
+                    <input type="button" class="btn btn-primary" value="Delete" ng-click="deleteOrder(orders)" />
+                </td>
+            </tr>
+        </table>
+
+
+
+
+        <!-- Add OrderModal -->
+        <div class="modal fade" id="myModalHorizontal" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                                data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                          Add Orders
+                        </h4>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+
+                        <form class="form-horizontal" role="form" name="addOrder"  novalidate>
+                            <div class="form-group" >
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Order Date</label>
+                                <div class="col-sm-10" ng-class="{ 'has-error' : addOrder.Date.$invalid && addOrder.Date.$error }" >
+                                    <input type="text" class="form-control" name="Date" placeholder="yyyy-MM-dd" ng-model="OrderDate"  required>
+                                    
+                                    <p ng-show="addOrder.Date.$error.required" class="help-block">The required field.</p>
+                                </div>
+                               
+                            </div>
+
+
+
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputPassword3">Customer</label>
+                                <div class="col-sm-10" ng-class="{ 'has-error' : addOrder.Customer.$invalid && addOrder.Customer.$error }">
+                                    <select name="Customer" ng-model="cusId" class="form-control" ng-options="c.Id as c.Name for c in cId" required>
+                                        <option value=""></option>
+                                       
+                                    </select>
+                                  
+
+                                    <input type="hidden" id="customerId" value="{{cusId}}" />
+                                    <p ng-show="addOrder.Customer.$error.required && addOrder.Customer.$invalid" class="help-block">The required field.</p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Product</label>
+                                <div class="col-sm-10" ng-class="{ 'has-error' : addOrder.product.$invalid && addOrder.product.$error }">
+                                    <select name="product" ng-model="Product" class="form-control" ng-options="item as item.ProductName for item in pId" required>
+                                        <option value=""></option>
+                                    </select>
+
+
+                                    <input type="hidden" id="productId" value="{{Product.Id}}" />
+                                    <p ng-show="addOrder.product.$error.required && addOrder.product.$invalid" class="help-block">The required field.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Price</label>
+                                <div class="col-sm-10" >
+                                    <input type="text" class="form-control"  id="Price" value="{{Product.Price}}" placeholder="Price" ng-readonly="true">
+                                 
+                                </div>
+                            </div>
+
+                        </form>
+
+
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">
+                            Close
+                        </button>
+                        <input type="button" id="Add_Order" class="btn btn-default" value="Submit" ng-click="addNewOrder(addOrder.$valid)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!--Update OrderModal -->
+        <div class="modal fade" id="myModalHorizontal2" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                                data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            Update Order
+                        </h4>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+
+                        <form class="form-horizontal" role="form" name="updOrder" novalidate>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Order Id</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" ng-model="Id" ng-readonly="true"/>
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Order Date</label>
+                                <div class="col-sm-10" ng-class="{ 'has-error' : updOrder.Date.$invalid && updOrder.Date.$error }">
+                                    <input type="text" class="form-control" name="Date" placeholder="yyyy-MM-dd" ng-model="OrderDate2"  required>
+                                    
+                                    <p ng-show="updOrder.Date.$error.required" class="help-block">The required field.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputPassword3">Customer</label>
+                                <div class="col-sm-10" ng-class="{ 'has-error' : updOrder.repeatSelect.$invalid && updOrder.repeatSelect.$error }">
+
+                                    <input type="hidden" id="updateCus" value="{{data}}" /><br />
+                                    Person Name: <span ng-bind="upCusName"></span>
+                                    <select class="form-control" name="repeatSelect" id="repeatSelect" ng-model="data" required>
+                                        <option value="" ng-if="false"></option>
+                                        <option  ng-repeat="option in cId" value="{{option.Id}}">{{option.Name}}</option>
+                                    </select>
+                                    <p ng-show="updOrder.repeatSelect.$error.required && updOrder.repeatSelect.$invalid" class="help-block">The required field.</p>
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Product Name</label>
+                                <div class="col-sm-10" ng-class="{ 'has-error' : updOrder.product.$invalid && updOrder.product.$error }">
+
+                                    Product Name: <span ng-bind="upCusName2"></span>
+
+                                    <select class="form-control"  name="product" ng-model="upProduct" ng-options="item as item.ProductName for item in pId" required>
+                                        <option value="" ng-if="false">hbhbb</option>
+                                    </select>
+                                    <input type="hidden" id="productId" ng-bind="upProduct.Id" />
+                                    <p ng-show="updOrder.product.$error.required && updOrder.product.$invalid" class="help-block">The required field.</p>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="inputEmail3">Price</label>
+                                
+                                <div class="col-sm-10">
+                                    Price: <span ng-bind="price"></span>
+                                    <input type="text"  class="form-control" id="upPrice" value="{{upProduct.Price}}" placeholder="Price" ng-readonly="true">
+
+                                </div>
+                            </div>
+
+                        </form>
+
+
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">
+                            Close
+                        </button>
+                        <input type="button" id="Add_Order" class="btn btn-default" value="Submit" ng-click="updateOrderEvt(updOrder.$valid)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   </div>
+</div>
+
+

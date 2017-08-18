@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewBag.Title = "People";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+
+  
+    <script src="~/People.js"></script>
+}
+<h2>People</h2>
+
+
+<div ng-app="MyModule" class="row">
+
+    <table ng-controller="DBcontroller">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>City</th>
+                <th>Institute</th>
+                <th>hh</th>
+                <th>ff</th>
+            </tr>
+        </thead>
+        <tr ng-repeat="student in students">
+            <td>{{ student.Name }}</td>
+            <td>{{ student.Address1 }}</td>
+            <td>{{ student.Address2}}</td>
+            <td>{{ student.City}}</td>
+            <td>{{ student.Address2}}</td>
+        </tr>
+    </table>
+
+
+
+</div>
+
